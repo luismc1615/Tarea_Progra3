@@ -82,7 +82,7 @@ class LoginPage extends StatelessWidget {
                         SizedBox(
                           height: 10,
                         ),
-                        Text('Por favor ingrese sus credenciales',
+                        Text('Ingrese sus Credenciales',
                             style: TextStyle(fontSize: 15, color: Colors.grey)),
                         SizedBox(
                           height: 20,
@@ -116,7 +116,7 @@ class LoginPage extends StatelessWidget {
                             mainAxisAlignment: MainAxisAlignment.end,
                             children: [
                               Text(
-                                'Da click en Iniciar para ingresar al sistema.',
+                                'Click para Ingresar al Sistema.',
                                 style:
                                     TextStyle(color: Colors.orangeAccent[700]),
                               )
@@ -138,6 +138,7 @@ class LoginPage extends StatelessWidget {
                                         Color(0xFFE94057),
                                         Color(0xFFF27121),
                                       ])),
+                                        
                               child: RaisedButton(
                                 child: Text("Ingresar"),
                                 color: Colors.red,
@@ -147,7 +148,7 @@ class LoginPage extends StatelessWidget {
                                 onPressed: () {
                                   password = inputcontrollerPassword.text;
                                   usuario = inputcontrollerCedula.text;
-                                  _loginRequest();
+                                _loginRequest();
                                 },
                               )),
                         ),
@@ -158,17 +159,19 @@ class LoginPage extends StatelessWidget {
       ),
     );
   }
-    _makeGetRequest() async {
+
+  _makeGetRequest() async {
     String url = 'https://jsonplaceholder.typicode.com/posts';
     http.Response response = await http.get(url);
     int statusCode = response.statusCode;
     Map<String, String> headers = response.headers;
     String contentType = headers['content-type'];
-    var jsn = json.decode(response.body);
+    var jason = json.decode(response.body);
 
-    print(jsn[1]);
+    print(jason[1]);
   }
-    _loginRequest() async {
+
+  _loginRequest() async {
     String url = 'http://localhost:8099/authentication/login';
     Map<String, String> headers = {"Content-type": "application/json"};
     String json =
@@ -189,10 +192,6 @@ class LoginPage extends StatelessWidget {
     }
   }
 
-
-
-
-
   Future<void> _showMyDialog() async {
     return showDialog<void>(
       context: context,
@@ -203,13 +202,13 @@ class LoginPage extends StatelessWidget {
           content: SingleChildScrollView(
             child: ListBody(
               children: <Widget>[
-                Text('Los credenciales son inválidos.'),
+                Text('Las credenciales son inválidas.'),
               ],
             ),
           ),
           actions: <Widget>[
             TextButton(
-              child: Text('Approve'),
+              child: Text('Aceptar'),
               onPressed: () {
                 Navigator.of(context).pop();
               },
@@ -224,34 +223,28 @@ class LoginPage extends StatelessWidget {
 class WidgetDestino extends StatelessWidget {
   String jsonSample;
   var json;
-  
+
   final Widget child;
   WidgetDestino({Key key, this.child}) : super(key: key);
   @override
   Widget build(BuildContext context) {
     _makeGetRequest();
-        var json = jsonDecode(jsonSample);
+    var json = jsonDecode(jsonSample);
     return Scaffold(
       body: Container(
-        
-        child: JsonTable(
-          json
-        ),
+        child: JsonTable(json),
       ),
     );
   }
 
-
   _makeGetRequest() async {
-  print(tokenActual);
-  String url = 'http://localhost:8099/usuarios';
+    print(tokenActual);
+    String url = 'http://localhost:8099/usuarios';
 
     final response = await http.get(url, headers: {
       'Content-Type': 'application/json',
       HttpHeaders.authorizationHeader: 'bearer $tokenActual',
     });
     print(response);
-
-  
-}
+  }
 }
