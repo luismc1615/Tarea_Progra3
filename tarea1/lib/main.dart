@@ -18,12 +18,15 @@ void main() {
 String tokenActual;
 
 class LoginPage extends StatelessWidget {
+
+   
   String password;
   String usuario;
   BuildContext context;
 
-  TextEditingController inputcontrollerCedula = new TextEditingController();
+   TextEditingController inputcontrollerCedula = new TextEditingController();
   TextEditingController inputcontrollerPassword = new TextEditingController();
+
 
   @override
   Widget build(BuildContext context) {
