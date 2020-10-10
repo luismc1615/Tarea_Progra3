@@ -158,8 +158,7 @@ class LoginPage extends StatelessWidget {
       ),
     );
   }
-
-  _makeGetRequest() async {
+    _makeGetRequest() async {
     String url = 'https://jsonplaceholder.typicode.com/posts';
     http.Response response = await http.get(url);
     int statusCode = response.statusCode;
@@ -169,8 +168,7 @@ class LoginPage extends StatelessWidget {
 
     print(jsn[1]);
   }
-
-  _loginRequest() async {
+    _loginRequest() async {
     String url = 'http://localhost:8099/authentication/login';
     Map<String, String> headers = {"Content-type": "application/json"};
     String json =
@@ -190,6 +188,10 @@ class LoginPage extends StatelessWidget {
       _showMyDialog();
     }
   }
+
+
+
+
 
   Future<void> _showMyDialog() async {
     return showDialog<void>(
@@ -228,7 +230,7 @@ class WidgetDestino extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     _makeGetRequest();
-    var json = jsonDecode(jsonSample);
+        var json = jsonDecode(jsonSample);
     return Scaffold(
       body: Container(
         
@@ -238,6 +240,7 @@ class WidgetDestino extends StatelessWidget {
       ),
     );
   }
+
 
   _makeGetRequest() async {
   print(tokenActual);
