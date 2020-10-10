@@ -1,9 +1,10 @@
 import 'dart:convert';
 import 'dart:html';
+import 'dart:io';
+import 'package:json_table/json_table.dart';
 
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'LoginLogic/Login.dart';
 import 'package:http/http.dart' as http;
 
 void main() {
@@ -13,6 +14,7 @@ void main() {
     home: LoginPage(),
   ));
 }
+
 String tokenActual;
 
 class LoginPage extends StatelessWidget {
@@ -126,6 +128,16 @@ class LoginPage extends StatelessWidget {
                           child: Container(
                               alignment: Alignment.center,
                               width: 250,
+                              decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(50),
+                                  gradient: LinearGradient(
+                                      begin: Alignment.centerLeft,
+                                      end: Alignment.centerRight,
+                                      colors: [
+                                        Color(0xFF8A2387),
+                                        Color(0xFFE94057),
+                                        Color(0xFFF27121),
+                                      ])),
                               child: RaisedButton(
                                 child: Text("Ingresar"),
                                 color: Colors.red,
@@ -166,13 +178,13 @@ class LoginPage extends StatelessWidget {
     http.Response response = await http.post(url, headers: headers, body: json);
 
     int statusCode = response.statusCode;
+    print(statusCode);
     String body = response.body;
     var jsonResponse = jsonDecode(body);
 
     if (statusCode == 200) {
       tokenActual = jsonResponse["jwt"];
-      print(tokenActual);
-      Route route =MaterialPageRoute(builder: (bc) => WidgetDestino());
+      Route route = MaterialPageRoute(builder: (bc) => WidgetDestino());
       Navigator.of(context).push(route);
     } else if (statusCode == 500) {
       _showMyDialog();
@@ -180,53 +192,63 @@ class LoginPage extends StatelessWidget {
   }
 
   Future<void> _showMyDialog() async {
-  return showDialog<void>(
-    context: context,
-    barrierDismissible: false, // user must tap button!
-    builder: (BuildContext context) {
-      return AlertDialog(
-        title: Text('Error!'),
-        content: SingleChildScrollView(
-          child: ListBody(
-            children: <Widget>[
-              Text('Los credenciales son inválidos.'),
-            ],
+    return showDialog<void>(
+      context: context,
+      barrierDismissible: false, // user must tap button!
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text('Error!'),
+          content: SingleChildScrollView(
+            child: ListBody(
+              children: <Widget>[
+                Text('Los credenciales son inválidos.'),
+              ],
+            ),
           ),
-        ),
-        actions: <Widget>[
-          TextButton(
-            child: Text('Approve'),
-            onPressed: () {
-              Navigator.of(context).pop();
-            },
-          ),
-        ],
-      );
-    },
-  );
-}
+          actions: <Widget>[
+            TextButton(
+              child: Text('Approve'),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+          ],
+        );
+      },
+    );
+  }
 }
 
 class WidgetDestino extends StatelessWidget {
+  String jsonSample;
+  var json;
+  
   final Widget child;
   WidgetDestino({Key key, this.child}) : super(key: key);
   @override
   Widget build(BuildContext context) {
+    _makeGetRequest();
+    var json = jsonDecode(jsonSample);
     return Scaffold(
-          appBar: AppBar(
-            title: Text('Widget Destino'),
-          ),
-          body: Container(
-            padding: EdgeInsets.all(32.0),
-            child: Center(
-              child: RaisedButton(
-                child: Text("Regresar"),
-                onPressed: (){ 
-                  Navigator.of(context).pop();
-                },
-              ),
-            ),
-          ),
-        );   
+      body: Container(
+        
+        child: JsonTable(
+          json
+        ),
+      ),
+    );
   }
+
+  _makeGetRequest() async {
+  print(tokenActual);
+  String url = 'http://localhost:8099/usuarios';
+
+    final response = await http.get(url, headers: {
+      'Content-Type': 'application/json',
+      HttpHeaders.authorizationHeader: 'bearer $tokenActual',
+    });
+    print(response);
+
+  
+}
 }
